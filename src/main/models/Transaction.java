@@ -1,39 +1,49 @@
-package com.example.handlers;
+package com.example.models;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.undertow.server.HttpHandler;
-import io.undertow.server.HttpServerExchange;
-import io.undertow.util.Headers;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+public class Transaction {
+    private String farmerId;
+    private String productId;
+    private int quantity;
+    private double amount;
 
-public class TransactionHandler implements HttpHandler {
-    private static final List<Map<String, Object>> transactions = new ArrayList<>();
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    public Transaction() {}
 
-    @Override
-    public void handleRequest(HttpServerExchange exchange) throws IOException {
-        if ("POST".equals(exchange.getRequestMethod().toString())) {
-            handleAddTransaction(exchange);
-        } else {
-            exchange.setStatusCode(405);
-            exchange.getResponseSender().send("Method Not Allowed");
-        }
+    public Transaction(String farmerId, String productId, int quantity, double amount) {
+        this.farmerId = farmerId;
+        this.productId = productId;
+        this.quantity = quantity;
+        this.amount = amount;
     }
 
-    private void handleAddTransaction(HttpServerExchange exchange) throws IOException {
-        exchange.getRequestReceiver().receiveFullString((reqExchange, message) -> {
-            try {
-                Map<String, Object> transaction = objectMapper.readValue(message, Map.class);
-                transactions.add(transaction);
-                exchange.setStatusCode(201);
-                exchange.getResponseSender().send("Transaction recorded successfully");
-            } catch (Exception e) {
-                exchange.setStatusCode(400);
-                exchange.getResponseSender().send("Invalid request");
-            }
-        });
+    public String getFarmerId() {
+        return farmerId;
+    }
+
+    public void setFarmerId(String farmerId) {
+        this.farmerId = farmerId;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
     }
 }
